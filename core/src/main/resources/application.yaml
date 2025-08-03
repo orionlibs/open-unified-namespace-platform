@@ -1,0 +1,120 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+error:
+  api:
+    validation:
+      message: "Validation failed for one or more fields"
+    not_found:
+      message: "Resource not found: "
+    access_denied:
+      message: "Access denied"
+    generic_error:
+      message: "An unexpected error occurred"
+  database:
+    duplicate_record:
+      message: "Duplicate database record found: "
+
+# Production profile (default)
+---
+spring:
+  config:
+    activate:
+      on-profile: "!test"
+
+jwt:
+  secret: ${JWT_SECRET_BASE64_ENCODED}
+crypto:
+  sha:
+    key: ${SHA_ENCODING_KEY:}
+  aes256:
+    key: ${AES256_KEY:}
+  hmac-for-jwt:
+    key: ${HMAC_FOR_JWT_KEY:}
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${USERS_DATABASE_URL}
+    username: ${USERS_DATABASE_USERNAME}
+    password: ${USERS_DATABASE_PASSWORD}
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 10
+      idleTimeout: 10000
+      maxLifetime: 1800000
+      connectionTimeout: 30000
+  logging-datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${USERS_DATABASE_URL}
+    username: ${USERS_DATABASE_USERNAME}
+    password: ${USERS_DATABASE_PASSWORD}
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 10
+      idleTimeout: 10000
+      maxLifetime: 1800000
+      connectionTimeout: 30000
+  #logging:
+  #  level:
+  #    org.hibernate.SQL: DEBUG
+  #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      jdbc:
+        lob:
+          non_contextual_creation: true
+    #show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL;\INIT=CREATE SCHEMA IF NOT EXISTS uns;
+    username: sa
+    password:
+  logging-datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL;\INIT=CREATE SCHEMA IF NOT EXISTS uns;
+    username: sa
+    password:
+  #logging:
+  #  level:
+  #    org.hibernate.SQL: DEBUG
+  #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  jpa:
+    database: H2
+    hibernate:
+      ddl-auto: create-drop
+      dialect: org.hibernate.dialect.H2Dialect
+  #  show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+jwt:
+  secret: nMgkahztuFdyw9BfUSOvI9I78r7CnOzRvB8Ezqt4Q/r+Fw5Vctr6wXedK7uv0byMNvRRUzxpNzBx2Btiv/A1BA==
+crypto:
+  sha:
+    key: ${SHA_ENCODING_KEY:0123456789ABCDEF0123456789ABCDEF}
+  aes256:
+    key: ${AES256_KEY:0123456789ABCDEF0123456789ABCDEF}
+  hmac-for-jwt:
+    key: ${HMAC_FOR_JWT_KEY:hmac-for-jwt-key-0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF}
+---
+version: 0.0.1
+environment: ${ENVIRONMENT_NAME:production}
