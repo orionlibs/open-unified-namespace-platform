@@ -62,8 +62,16 @@ publishing {
 }
 
 tasks.withType<JavaCompile> {
+    dependsOn("buildCoreProject")
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Werror"))
+}
+
+tasks.register("buildCoreProject", Exec::class) {
+    workingDir("../core")
+    // For Windows, you might need to use "cmd", "/c", "gradlew.bat", ...
+    commandLine("sh", "-c", "./gradlew clean build")
+    description = "Builds the 'core' project."
 }
 
 tasks.withType<Test> {

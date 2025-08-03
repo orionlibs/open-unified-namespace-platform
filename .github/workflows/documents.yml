@@ -2,7 +2,7 @@ name: CI/CD of documents
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "nonexistentbranch" ] #using a non-existent branch name causes Github to skip this workflow file
     paths:
       - 'documents/**'
       - '.github/workflows/documents.yml'
