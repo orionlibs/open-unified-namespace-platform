@@ -19,7 +19,7 @@ jobs:
           cache: 'gradle'
 
       - name: Make gradlew executable
-        run: chmod +x gradlew
+        run: find . -type f -name "gradlew" -exec chmod +x {} \;
 
       #- name: Build & publish libs to local
       #  run: ./gradlew -p libs clean build publishToMavenLocal --no-daemon
