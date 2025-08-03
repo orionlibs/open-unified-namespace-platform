@@ -68,6 +68,8 @@ tasks.withType<JavaCompile> {
         dependsOn("buildCoreProject")
     }
     
+    finalizedBy("publishToMavenLocal")
+    
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Werror"))
 }

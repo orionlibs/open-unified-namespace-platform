@@ -13,9 +13,14 @@ java {
 	}
 }
 
+val isMonorepoContext = gradle.parent != null
+
 tasks.withType<JavaCompile> {
-    dependsOn("buildUserServiceProject")
-    dependsOn("buildDocumentsProject")
+    if (!isMonorepoContext) {
+        dependsOn("buildUserServiceProject")
+        dependsOn("buildDocumentsProject")
+    }
+    
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Werror"))
 }
@@ -38,8 +43,6 @@ repositories {
 	mavenLocal()
     mavenCentral()
 }
-
-val isMonorepoContext = gradle.parent != null
 
 extra["springShellVersion"] = "3.4.0"
 
