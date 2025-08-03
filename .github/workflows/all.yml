@@ -32,6 +32,9 @@ jobs:
       #    cd uns-cli
       #    ./gradlew clean build --no-daemon
 
+      - name: Build core → Maven Local
+        run: ./gradlew :core:clean :core:publishToMavenLocal
+      
       - name: Build all projects
         run: ./gradlew clean build --no-daemon
 
