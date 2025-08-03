@@ -61,8 +61,13 @@ publishing {
     }
 }
 
+val isMonorepoContext = gradle.parent != null
+
 tasks.withType<JavaCompile> {
-    dependsOn("buildCoreProject")
+    if (!isMonorepoContext) {
+        dependsOn("buildCoreProject")
+    }
+    
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Werror"))
 }
@@ -70,7 +75,7 @@ tasks.withType<JavaCompile> {
 tasks.register("buildCoreProject", Exec::class) {
     workingDir("../core")
     // For Windows, you might need to use "cmd", "/c", "gradlew.bat", ...
-    commandLine("sh", "-c", "./gradlew clean build")
+    commandLine("sh", "-c", "./gradlew build publishToMavenLocal")
     description = "Builds the 'core' project."
 }
 
@@ -80,8 +85,6 @@ tasks.withType<Test> {
         exceptionFormat = TestExceptionFormat.FULL
     }
 }
-
-val isMonorepoContext = gradle.parent != null
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
