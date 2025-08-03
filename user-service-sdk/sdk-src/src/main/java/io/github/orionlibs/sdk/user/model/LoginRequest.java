@@ -48,7 +48,7 @@ import io.github.orionlibs.sdk.user.invoker.JSON;
 /**
  * LoginRequest
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2025-08-02T20:31:11.159127400+01:00[Europe/London]", comments = "Generator version: 7.13.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2025-08-03T19:55:26.356379500+01:00[Europe/London]", comments = "Generator version: 7.13.0")
 public class LoginRequest {
   public static final String SERIALIZED_NAME_PASSWORD = "password";
   @SerializedName(SERIALIZED_NAME_PASSWORD)
