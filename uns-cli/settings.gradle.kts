@@ -8,7 +8,7 @@ pluginManagement {
 rootProject.name = "uns-cli"
 
 if (gradle.parent == null) {
-    includeBuild("../core")
-    includeBuild("../user-service")
-    includeBuild("../documents")
+    //includeBuild("../core")
+    //includeBuild("../user-service")
+    //includeBuild("../documents")
 }

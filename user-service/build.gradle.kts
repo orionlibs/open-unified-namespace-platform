@@ -65,9 +65,9 @@ publishing {
 val isMonorepoContext = gradle.parent != null
 
 tasks.withType<JavaCompile> {
-    if (!isMonorepoContext) {
+    /*if (!isMonorepoContext) {
         dependsOn("buildCoreProject")
-    }
+    }*/
     
     finalizedBy("publishToMavenLocal")
     
@@ -75,12 +75,12 @@ tasks.withType<JavaCompile> {
     options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Werror"))
 }
 
-tasks.register("buildCoreProject", Exec::class) {
+/*tasks.register("buildCoreProject", Exec::class) {
     workingDir("../core")
     // For Windows, you might need to use "cmd", "/c", "gradlew.bat", ...
     commandLine("sh", "-c", "./gradlew build publishToMavenLocal")
     description = "Builds the 'core' project."
-}
+}*/
 
 tasks.withType<Test> {
     useJUnitPlatform()
