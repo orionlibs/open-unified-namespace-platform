@@ -1,11 +1,8 @@
-name: CI/CD of core
+name: CI/CD of all
 
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'core/**'
-      - '.github/workflows/core.yml'
 
 jobs:
   build-image:
@@ -14,17 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Use paths-filter to detect changes
-      - name: Detect changes in core library
-        id: changes
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            core:
-              - 'core/**'
-
       - name: Set up JDK 21
-        if: steps.changes.outputs.core == 'true'
         uses: actions/setup-java@v4
         with:
           java-version: '21'
@@ -32,19 +19,21 @@ jobs:
           cache: 'gradle'
 
       - name: Make gradlew executable
-        if: steps.changes.outputs.core == 'true'
         run: chmod +x gradlew
 
       #- name: Build & publish libs to local
-      #  run: ./gradlew -p libs clean build publishToMavenLocal --refresh-dependencies --no-daemon
+      #  run: ./gradlew -p libs clean build publishToMavenLocal --no-daemon
 
-      - name: Build & publish to local & test
-        if: steps.changes.outputs.core == 'true'
-        run: ./gradlew :core:build publishToMavenLocal --refresh-dependencies --no-daemon
+      #- name: Build services
+      #  run: ./gradlew -p services clean build --no-daemon
+        
+      #- name: Build UNS CLI Shell App
+      #  run: |
+      #    cd uns-cli
+      #    ./gradlew clean build --no-daemon
 
-      - name: Skip build
-        if: steps.changes.outputs.core != 'true'
-        run: echo "No changes in core; skipping build."
+      - name: Build all projects
+        run: ./gradlew clean build --no-daemon
 
       #- name: Configure AWS credentials
       #  uses: aws-actions/configure-aws-credentials@v4

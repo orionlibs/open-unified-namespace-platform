@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ../../
+      dockerfile: user-service/Dockerfile
+      args:
+        serviceName: user-service
+    image: user-service:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      USERS_DATABASE_URL: "${USERS_DATABASE_URL}"
+      USERS_DATABASE_USERNAME: "${USERS_DATABASE_USERNAME}"
+      USERS_DATABASE_PASSWORD: "${USERS_DATABASE_PASSWORD}"
