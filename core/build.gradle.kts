@@ -77,6 +77,7 @@ tasks.named<Test>("test") {
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Werror"))
+    finalizedBy("publishToMavenLocal")
 }
 
 tasks.named("build") {
