@@ -1,8 +1,19 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+  }
+}
+
+dependencyResolutionManagement {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+}
+
 rootProject.name = "open-uns"
-include(":core")
-include(":user-service")
-include(":user-service-sdk")
-include(":documents")
+include(":core", ":user-service", ":user-service-sdk", ":documents")
 //include(":uns-cli")
 
 project(":core").projectDir = file("core")
