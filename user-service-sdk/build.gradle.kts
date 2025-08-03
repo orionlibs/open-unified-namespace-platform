@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-  `kotlin-dsl`
+    //`kotlin-dsl`
     id("org.openapi.generator") version "7.13.0"
 }
 

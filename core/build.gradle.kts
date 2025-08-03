@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    `kotlin-dsl`
+    //`kotlin-dsl`
     //id("base")
     id("maven-publish")
     id("io.spring.dependency-management") version "1.1.7"
@@ -41,6 +41,19 @@ publishing {
         mavenLocal()
     }
 }
+
+/*configurations.testRuntimeClasspath {
+    exclude(group = "ch.qos.logback", module = "logback-classic")
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.codehaus.groovy") {
+            useVersion("3.0.24")
+            because("Avoid conflict between Groovy 3.x (used by Gradle) and Groovy 4.x (transitive dependency)")
+        }
+    }
+}*/
 
 dependencies {
     //api(project(":platform"))

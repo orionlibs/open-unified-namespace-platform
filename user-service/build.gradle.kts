@@ -4,7 +4,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     application
-    `kotlin-dsl`
+    //`kotlin-dsl`
     jacoco
     `base`
     id("maven-publish")
