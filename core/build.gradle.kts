@@ -1,5 +1,6 @@
 plugins {
     id("java-library")
+    `kotlin-dsl`
     //id("base")
     id("maven-publish")
     id("io.spring.dependency-management") version "1.1.7"
