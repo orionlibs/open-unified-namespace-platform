@@ -11,7 +11,7 @@ dependencies {
 }
 
 tasks.named("openApiGenerate") {
-  dependsOn(":services:user-service:generateOpenApiDocs")
+  dependsOn(":user-service:generateOpenApiDocs")
 }
 
 openApiGenerate {
