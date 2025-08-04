@@ -1,10 +1,15 @@
 package io.github.orionlibs.core.jwt;
 
 import io.github.orionlibs.core.cryptology.HMACSHAEncryptionKeyProvider;
+import io.github.orionlibs.core.user.UserService;
+import io.github.orionlibs.core.user.model.UserModel;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Collection;
@@ -19,7 +24,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class JWTService
 {
-    private static final long EXPIRATION_IN_MILLISECONDS = 3600000;
+    private static final long EXPIRATION_IN_MILLISECONDS = 3_600_000L;
+    @Autowired
+    private UserService userService;
     @Autowired
     private HMACSHAEncryptionKeyProvider hmacSHAEncryptionKeyProvider;
 
@@ -33,8 +40,9 @@ public class JWTService
 
     public String generateToken(UserDetails userDetails)
     {
+        UserModel user = userService.loadUserAsModelByUsername(userDetails.getUsername());
         return Jwts.builder()
-                        .subject(userDetails.getUsername())
+                        .setSubject(user.getId().toString())
                         .claim("authorities", userDetails.getAuthorities()
                                         .stream()
                                         .map(GrantedAuthority::getAuthority)
@@ -46,16 +54,18 @@ public class JWTService
     }
 
 
-    public String generateToken(String username, Collection<? extends GrantedAuthority> authorities)
+    public String generateToken(String userID, Collection<? extends GrantedAuthority> authorities)
     {
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + EXPIRATION_IN_MILLISECONDS);
         return Jwts.builder()
-                        .subject(username)
+                        .setSubject(userID)
                         .claim("authorities", authorities
                                         .stream()
                                         .map(GrantedAuthority::getAuthority)
                                         .toList())
-                        .issuedAt(new Date())
-                        .expiration(new Date(System.currentTimeMillis() + EXPIRATION_IN_MILLISECONDS))
+                        .issuedAt(now)
+                        .expiration(expirationDate)
                         .signWith(convertSigningKeyToSecretKeyObject(hmacSHAEncryptionKeyProvider.getJwtSigningKey()), SignatureAlgorithm.HS512)
                         .compact();
     }
@@ -63,8 +73,9 @@ public class JWTService
 
     public String generateToken(UserDetails userDetails, Date issuedAt, Date expiresAt)
     {
+        UserModel user = userService.loadUserAsModelByUsername(userDetails.getUsername());
         return Jwts.builder()
-                        .subject(userDetails.getUsername())
+                        .setSubject(user.getId().toString())
                         .claim("authorities", userDetails.getAuthorities()
                                         .stream()
                                         .map(GrantedAuthority::getAuthority)
@@ -78,21 +89,48 @@ public class JWTService
 
     public boolean validateToken(String token, UserDetails userDetails)
     {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-    }
-
-
-    public String extractUsername(String token)
-    {
+        String userID = extractUserID(token);
+        UserModel user = userService.loadUserAsModelByUsername(userDetails.getUsername());
+        boolean isTokenExpired = false;
         try
         {
-            Claims claims = parseClaims(token);
-            return claims.getSubject();
+            isTokenExpired = isTokenExpired(token);
+        }
+        catch(ExpiredJwtException e)
+        {
+            isTokenExpired = true;
         }
         catch(Exception e)
         {
-            return "";
+            isTokenExpired = false;
+        }
+        return userID.equals(user.getId().toString()) && !isTokenExpired;
+    }
+
+
+    public String extractUserID(String token)
+    {
+        boolean isTokenExpired = false;
+        try
+        {
+            isTokenExpired = isTokenExpired(token);
+        }
+        catch(ExpiredJwtException e)
+        {
+            isTokenExpired = true;
+        }
+        catch(Exception e)
+        {
+            isTokenExpired = false;
+        }
+        if(isTokenExpired)
+        {
+            return "INVALID-USER-ID";
+        }
+        else
+        {
+            Claims claims = parseClaims(token);
+            return claims.getSubject();
         }
     }
 
@@ -115,19 +153,19 @@ public class JWTService
     }
 
 
-    private Claims parseClaims(String token)
+    private Claims parseClaims(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, SecurityException, IllegalArgumentException
     {
         SecretKey key = (SecretKey)convertSigningKeyToSecretKeyObject(hmacSHAEncryptionKeyProvider.getJwtSigningKey());
         return Jwts.parser()
-                        .setSigningKey(key)
+                        .verifyWith(key)
                         .build()
                         .parseClaimsJws(token)
-                        .getBody();
+                        .getPayload();
+    }
         /*ExpiredJwtException
         UnsupportedJwtException
         MalformedJwtException
         SignatureException
         SecurityException
         IllegalArgumentException*/
-    }
 }

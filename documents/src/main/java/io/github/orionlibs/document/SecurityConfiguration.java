@@ -37,8 +37,9 @@ public class SecurityConfiguration
     @Bean
     public JwtDecoder jwtDecoder(@Value("${jwt.secret}") String base64Secret)
     {
+        byte[] secret = Base64.getDecoder().decode(base64Secret);
         SecretKey key = new SecretKeySpec(
-                        Base64.getDecoder().decode(base64Secret),
+                        secret,
                         SignatureAlgorithm.HS512.getJcaName()
         );
         return NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS512).build();

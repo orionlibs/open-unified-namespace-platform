@@ -5,8 +5,8 @@ import io.github.orionlibs.core.cryptology.HMACSHAEncryptionKeyProvider;
 import io.github.orionlibs.core.data.DuplicateRecordException;
 import io.github.orionlibs.core.event.Publishable;
 import io.github.orionlibs.core.user.UserService;
-import io.github.orionlibs.user.event.EventUserRegistered;
 import io.github.orionlibs.core.user.model.UserModel;
+import io.github.orionlibs.user.event.EventUserRegistered;
 import io.github.orionlibs.user.registration.api.UserRegistrationRequest;
 import io.github.orionlibs.user.setting.UserSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UserRegistrationService implements Publishable
 
 
     @Transactional
-    public void registerUser(UserRegistrationRequest request) throws DuplicateRecordException
+    public UserModel registerUser(UserRegistrationRequest request) throws DuplicateRecordException
     {
         UserModel newUser = new UserModel(hmacSHAEncryptionKeyProvider);
         newUser.setUsername(request.getUsername());
@@ -38,12 +38,13 @@ public class UserRegistrationService implements Publishable
         newUser.setPhoneNumber(request.getPhoneNumber());
         try
         {
-            userService.saveUser(newUser);
+            newUser = userService.saveUser(newUser);
             userSettingsService.saveDefaultSettingsForUser(newUser);
             publish(EventUserRegistered.EVENT_NAME, EventUserRegistered.builder()
                             .username(request.getUsername())
                             .build());
             Logger.info("User saved");
+            return newUser;
         }
         catch(DataIntegrityViolationException | UnexpectedRollbackException e)
         {

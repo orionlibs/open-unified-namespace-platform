@@ -1,4 +1,4 @@
-package io.github.orionlibs.user;
+package io.github.orionlibs.user.registration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.github.orionlibs.core.data.DuplicateRecordException;
 import io.github.orionlibs.core.user.model.UserDAO;
 import io.github.orionlibs.core.user.model.UserModel;
-import io.github.orionlibs.user.registration.UserRegistrationService;
 import io.github.orionlibs.user.registration.api.UserRegistrationRequest;
 import io.github.orionlibs.user.setting.UserSettingsService;
 import io.github.orionlibs.core.user.setting.model.UserSettingsModel;

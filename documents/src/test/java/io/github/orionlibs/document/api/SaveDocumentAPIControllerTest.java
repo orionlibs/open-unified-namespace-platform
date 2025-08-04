@@ -31,7 +31,6 @@ class SaveDocumentAPIControllerTest
     @Autowired TestUtils utils;
     @Autowired APITestUtils apiUtils;
     String basePath;
-    String jwtToken;
     HttpHeaders headers;
 
 

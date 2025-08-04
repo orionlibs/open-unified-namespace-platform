@@ -40,6 +40,7 @@ public class APITestUtils
     {
         return Jwts.builder()
                         .setSubject(subject)
+                        .subject(subject)
                         .claim("authorities", List.of(authorities))
                         .setIssuedAt(new Date())
                         .setExpiration(new Date(System.currentTimeMillis() + 3600_000))
@@ -151,6 +152,43 @@ public class APITestUtils
                         .body(jsonService.toJson(objectToSave))
                         .when()
                         .put()
+                        .then()
+                        .extract()
+                        .response();
+    }
+
+
+    public Response makePatchAPICall(Object objectToSave, HttpHeaders headers)
+    {
+        Logger.info("[JUnit] making PATCH call");
+        RestAssured.defaultParser = Parser.JSON;
+        headers = getHttpHeaders(headers);
+        return given()
+                        .contentType(ContentType.JSON)
+                        .headers(headers)
+                        .accept(ContentType.JSON)
+                        .body(jsonService.toJson(objectToSave))
+                        .when()
+                        .patch()
+                        .then()
+                        .extract()
+                        .response();
+    }
+
+
+    public Response makePatchAPICall(Object objectToSave, HttpHeaders headers, String subject, String commaSeparatedAuthorities)
+    {
+        Logger.info("[JUnit] making PATCH call");
+        RestAssured.defaultParser = Parser.JSON;
+        headers = getHttpHeaders(headers);
+        return given()
+                        .auth().oauth2(jwtWithAuthorities(subject, commaSeparatedAuthorities.split(",")))
+                        .contentType(ContentType.JSON)
+                        .headers(headers)
+                        .accept(ContentType.JSON)
+                        .body(jsonService.toJson(objectToSave))
+                        .when()
+                        .patch()
                         .then()
                         .extract()
                         .response();

@@ -26,7 +26,6 @@ class UpdateDocumentAPIControllerTest
     @Autowired DocumentService documentService;
     @Autowired TestUtils utils;
     @Autowired APITestUtils apiUtils;
-    String jwtToken;
     HttpHeaders headers;
 
 

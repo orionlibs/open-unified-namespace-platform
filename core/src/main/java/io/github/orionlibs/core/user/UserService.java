@@ -2,6 +2,7 @@ package io.github.orionlibs.core.user;
 
 import io.github.orionlibs.core.user.model.UserDAO;
 import io.github.orionlibs.core.user.model.UserModel;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,9 +36,39 @@ public class UserService implements UserDetailsService
     }
 
 
+    @Transactional(readOnly = true)
+    public UserModel loadUserAsModelByUsername(String username) throws UsernameNotFoundException
+    {
+        return dao.findByUsername(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+
+    @Transactional(readOnly = true)
+    public UserModel loadUserByUserID(String userID) throws UserIDNotFoundException
+    {
+        return loadUserByUserID(UUID.fromString(userID));
+    }
+
+
+    @Transactional(readOnly = true)
+    public UserModel loadUserByUserID(UUID userID) throws UserIDNotFoundException
+    {
+        return dao.findByUserID(userID)
+                        .orElseThrow(() -> new UserIDNotFoundException("User not found"));
+    }
+
+
     @Transactional
     public UserModel saveUser(UserModel user)
     {
         return dao.save(user);
+    }
+
+
+    @Transactional
+    public void deleteAll()
+    {
+        dao.deleteAll();
     }
 }
