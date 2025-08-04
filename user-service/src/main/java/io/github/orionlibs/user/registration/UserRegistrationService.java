@@ -1,4 +1,4 @@
-package io.github.orionlibs.user;
+package io.github.orionlibs.user.registration;
 
 import io.github.orionlibs.core.Logger;
 import io.github.orionlibs.core.cryptology.HMACSHAEncryptionKeyProvider;

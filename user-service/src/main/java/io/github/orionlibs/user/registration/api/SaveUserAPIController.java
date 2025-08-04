@@ -3,7 +3,7 @@ package io.github.orionlibs.user.registration.api;
 import static org.springframework.http.ResponseEntity.created;
 
 import io.github.orionlibs.user.ControllerUtils;
-import io.github.orionlibs.user.UserRegistrationService;
+import io.github.orionlibs.user.registration.UserRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
